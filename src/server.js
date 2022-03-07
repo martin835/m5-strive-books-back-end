@@ -16,11 +16,29 @@ const publicFolderPath = join(process.cwd(), "./public");
 /* console.log(publicFolderPath); */
 
 const server = express();
-const port = 3001;
+
+const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];
+const port = process.env.PORT;
+console.log(process.env.DB_CONNECTION);
+
 // *********************************** MIDDLEWARES ***********************************
 
 server.use(express.static(publicFolderPath));
-server.use(cors());
+server.use(
+  cors({
+    origin: function (origin, next) {
+      //cors is a global middleware - for each request
+      console.log("ORIGIN: ", origin);
+      if (!origin || whitelist.indexOf(origin !== -1)) {
+        console.log("ORIGIN ALLOWED");
+        next(null, true);
+      } else {
+        console.log("ORIGIN NOT ALLOWED");
+        next(new Error("CORS ERROR!"));
+      }
+    },
+  })
+);
 server.use(express.json());
 
 // *********************************** ENDPOINTS *************************************

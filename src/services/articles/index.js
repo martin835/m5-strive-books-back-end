@@ -159,6 +159,7 @@ articlesRouter.patch(
 
     const coversPublicFolderPath = join(process.cwd(), "./public/img/covers");
 
+    //this shouldn't be path, but URL  ⬇️⬇️⬇️⬇️
     const coverPath =
       "http://localhost:3001/img/covers/" + req.params.articleId + ".jpg";
 
