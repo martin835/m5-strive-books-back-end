@@ -29,7 +29,8 @@ server.use(
     origin: function (origin, next) {
       //cors is a global middleware - for each request
       console.log("ORIGIN: ", origin);
-      if (origin === undefined || whitelist.indexOf(origin !== -1)) {
+      // 0 \\ 0
+      if (origin === undefined || whitelist.indexOf(origin) !== -1) {
         console.log([]);
         console.log("ORIGIN ALLOWED");
         next(null, true);
