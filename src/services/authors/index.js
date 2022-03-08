@@ -3,39 +3,37 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import uniqid from "uniqid";
+import { getAuthors, writeAuthors } from "../../lib/fs-tools.js";
 
-/* console.log(import.meta.url);
-console.log(fileURLToPath(import.meta.url)); */
+/* 
+OLD SYNC WAY:
+
 const currentFilePath = fileURLToPath(import.meta.url);
-
 const parentFolderPath = dirname(currentFilePath);
-/* console.log(parentFolderPath); */
-
 const authorsJSONPath = join(parentFolderPath, "authors.json");
-/* console.log(authorsJSONPath); */
+*/
 
 const authorsRouter = express.Router();
 //1
-authorsRouter.post("/", (request, response) => {
-  console.log(request.body);
-  const newAuthor = { ...request.body, createdAt: new Date(), id: uniqid() };
-  console.log(newAuthor);
+authorsRouter.post("/", async (req, res, next) => {
+  try {
+    const authors = await getAuthors();
 
-  const authorsArray = JSON.parse(fs.readFileSync(authorsJSONPath));
+    const newAuthor = { ...req.body, createdAt: new Date(), id: uniqid() };
 
-  authorsArray.push(newAuthor);
+    authors.push(newAuthor);
 
-  fs.writeFileSync(authorsJSONPath, JSON.stringify(authorsArray));
+    await writeAuthors(authors);
 
-  response.status(201).send({ id: newAuthor.id });
+    res.status(201).send({ id: newAuthor.id });
+  } catch (error) {}
 });
 
 //2
-authorsRouter.get("/", (request, response) => {
-  const fileContent = fs.readFileSync(authorsJSONPath);
-  console.log(JSON.parse(fileContent));
-  const authorsArray = JSON.parse(fileContent);
-  response.send(authorsArray);
+authorsRouter.get("/", async (req, res) => {
+  const authors = await getAuthors();
+
+  res.send(authors);
 });
 
 //3
