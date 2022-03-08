@@ -3,7 +3,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import uniqid from "uniqid";
-import { getAuthors, writeAuthors } from "../../lib/fs-tools.js";
+import { getArticles, getAuthors, writeAuthors } from "../../lib/fs-tools.js";
 
 /* 
 OLD SYNC WAY:
@@ -37,48 +37,47 @@ authorsRouter.get("/", async (req, res) => {
 });
 
 //3
-authorsRouter.get("/:authorId", (request, response) => {
-  console.log(request.params.authorId);
-  const authorsArray = JSON.parse(fs.readFileSync(authorsJSONPath));
+authorsRouter.get("/:authorId", async (req, res) => {
+  const authors = await getAuthors();
 
-  const foundAuthor = authorsArray.find(
-    (author) => author.id === request.params.authorId
+  const foundAuthor = authors.find(
+    (author) => author.id === req.params.authorId
   );
 
-  response.send(foundAuthor);
+  res.send(foundAuthor);
 });
 
 //4
-authorsRouter.put("/:authorId", (request, response) => {
-  const authorsArray = JSON.parse(fs.readFileSync(authorsJSONPath));
+authorsRouter.put("/:authorId", async (req, res) => {
+  const authors = await getAuthors();
 
-  const index = authorsArray.findIndex(
-    (author) => author.id === request.params.authorId
+  const index = authors.findIndex(
+    (author) => author.id === req.params.authorId
   );
-  const oldAuthor = authorsArray[index];
+  const oldAuthor = authors[index];
   const updatedAuthor = {
     ...oldAuthor,
-    ...request.body,
+    ...req.body,
     updatedAt: new Date(),
   };
 
-  authorsArray[index] = updatedAuthor;
+  authors[index] = updatedAuthor;
 
-  fs.writeFileSync(authorsJSONPath, JSON.stringify(authorsArray));
+  await writeAuthors(authors);
 
-  response.send(updatedAuthor);
+  res.send(updatedAuthor);
 });
 
 //5
-authorsRouter.delete("/:authorId", (request, response) => {
-  const authorsArray = JSON.parse(fs.readFileSync(authorsJSONPath));
-  const remainingAuthors = authorsArray.filter(
-    (author) => author.id !== request.params.authorId
+authorsRouter.delete("/:authorId", async (req, res) => {
+  const authors = await getAuthors();
+  const remainingAuthors = authors.filter(
+    (author) => author.id !== req.params.authorId
   );
 
-  fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors));
+  await writeAuthors(remainingAuthors);
 
-  response.status(204).send();
+  res.status(204).send();
 });
 
 export default authorsRouter;

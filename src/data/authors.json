@@ -1,20 +1,11 @@
 [
   {
-    "name": "Gisselle",
-    "surname": "Nitzsche",
-    "email": "Christian31@gmail.com",
-    "avatar": "https://cdn.fakercloud.com/avatars/lepetitogre_128.jpg",
-    "dateOfBirth": "Thu Aug 05 2021 06:46:43 GMT+0200 (Central European Summer Time)",
-    "createdAt": "2022-03-08T14:31:25.703Z",
-    "id": "eabenrfg0l0i8d3wo"
-  },
-  {
-    "name": "Jayden",
-    "surname": "Klein",
-    "email": "Bridget85@yahoo.com",
-    "avatar": "https://cdn.fakercloud.com/avatars/akmalfikri_128.jpg",
-    "dateOfBirth": "Mon Jun 07 2021 21:44:55 GMT+0200 (Central European Summer Time)",
-    "createdAt": "2022-03-08T14:31:35.990Z",
-    "id": "eabenrfg0l0i8dbue"
+    "name": "Raul",
+    "surname": "Mosciski",
+    "email": "Donavon.Wunsch@yahoo.com",
+    "avatar": "https://cdn.fakercloud.com/avatars/traneblow_128.jpg",
+    "dateOfBirth": "Sun Aug 29 2021 21:19:48 GMT+0200 (Central European Summer Time)",
+    "createdAt": "2022-03-08T14:35:29.630Z",
+    "id": "eabenrdkkl0i8ic4f"
   }
 ]
