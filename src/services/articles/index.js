@@ -9,6 +9,7 @@ import createHttpError from "http-errors";
 import { getArticles, writeArticles } from "../../lib/fs-tools.js";
 import multer from "multer";
 import { saveCoversPictures } from "../../lib/fs-tools.js";
+import { extname } from "path";
 
 /* console.log(import.meta.url);
 console.log(fileURLToPath(import.meta.url)); */
@@ -144,7 +145,10 @@ articlesRouter.patch(
     /* req.file.originalname.slice(req.file.originalname.indexOf(".") */
     try {
       console.log("FILE: ", req.file);
-      await saveCoversPictures(req.params.articleId + ".jpg", req.file.buffer);
+      await saveCoversPictures(
+        req.params.articleId + extname(req.file.originalname),
+        req.file.buffer
+      );
       res.send({ message: "file uploaded" });
     } catch (error) {
       next(error);
@@ -160,12 +164,14 @@ articlesRouter.patch(
     const coversPublicFolderPath = join(process.cwd(), "./public/img/covers");
 
     //this shouldn't be path, but URL  ⬇️⬇️⬇️⬇️
-    const coverPath =
-      "http://localhost:3001/img/covers/" + req.params.articleId + ".jpg";
+    const coverUrl =
+      "http://localhost:3001/img/covers/" +
+      req.params.articleId +
+      extname(req.file.originalname);
 
     const updatedarticle = {
       ...oldarticle,
-      cover: coverPath,
+      cover: coverUrl,
       updatedAt: new Date(),
     };
 
