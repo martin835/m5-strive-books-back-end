@@ -4,6 +4,8 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import uniqid from "uniqid";
 import { getArticles, getAuthors, writeAuthors } from "../../lib/fs-tools.js";
+import multer from "multer";
+import { saveAvatarsPictures } from "../../lib/fs-tools.js";
 
 /* 
 OLD SYNC WAY:
@@ -79,5 +81,49 @@ authorsRouter.delete("/:authorId", async (req, res) => {
 
   res.status(204).send();
 });
+
+//6 - upload an avatar
+
+authorsRouter.put(
+  "/:authorId/avatar",
+  multer().single("avatar"),
+  async (req, res, next) => {
+    try {
+      console.log("FILE: ", req.file);
+      await saveAvatarsPictures(
+        req.params.authorId + extname(req.file.originalname),
+        req.file.buffer
+      );
+      res.send({ message: "file uploaded" });
+    } catch (error) {
+      next(error);
+    }
+
+    const authors = await getAuthors();
+
+    const index = authors.findIndex(
+      (author) => author._id === req.params.authorId
+    );
+    const oldAuthor = authors[index];
+
+    const avatarsPublicFolderPath = join(process.cwd(), "./public/img/avatars");
+
+    //this shouldn't be path, but URL  ⬇️⬇️⬇️⬇️
+    const avatarUrl =
+      "http://localhost:3001/img/avatars/" +
+      req.params.authorId +
+      extname(req.file.originalname);
+
+    const updatedAuthor = {
+      ...oldAuthor,
+      avatar: avatarUrl,
+      updatedAt: new Date(),
+    };
+
+    authors[index] = updatedAuthor;
+
+    await writeAuthors(authors);
+  }
+);
 
 export default authorsRouter;

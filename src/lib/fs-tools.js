@@ -11,6 +11,7 @@ const articlesJSONPath = getJSONPath("articles.json");
 const authorsJSONPath = getJSONPath("authors.json");
 
 const coversPublicFolderPath = join(process.cwd(), "./public/img/covers");
+const avatarsPublicFolderPath = join(process.cwd(), "./public/img/avatars");
 
 export const getArticles = () => readJSON(articlesJSONPath);
 export const writeArticles = (content) => writeJSON(articlesJSONPath, content);
@@ -19,3 +20,6 @@ export const writeAuthors = (content) => writeJSON(authorsJSONPath, content);
 
 export const saveCoversPictures = (filename, contentAsABuffer) =>
   writeFile(join(coversPublicFolderPath, filename), contentAsABuffer);
+
+export const saveAvatarsPictures = (filename, contentAsABuffer) =>
+  writeFile(join(avatarsPublicFolderPath, filename), contentAsABuffer);
