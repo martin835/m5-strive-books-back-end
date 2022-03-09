@@ -2,7 +2,7 @@ import fs from "fs-extra"; // 3RD PARTY MODULE
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-const { readJSON, writeJSON, writeFile } = fs;
+const { readJSON, writeJSON, writeFile, createReadStream } = fs;
 
 const getJSONPath = (filename) =>
   join(join(dirname(fileURLToPath(import.meta.url)), "../data"), filename);
@@ -23,3 +23,6 @@ export const saveCoversPictures = (filename, contentAsABuffer) =>
 
 export const saveAvatarsPictures = (filename, contentAsABuffer) =>
   writeFile(join(avatarsPublicFolderPath, filename), contentAsABuffer);
+
+export const getArticlesReadableStream = () =>
+  createReadStream(articlesJSONPath);

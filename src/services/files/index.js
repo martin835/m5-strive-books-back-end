@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { saveCoversPictures } from "../../lib/fs-tools.js";
+import { saveCoversPictures, getArticles } from "../../lib/fs-tools.js";
 import { getPDFReadableStream } from "../../lib/pdf-tools.js";
 import { pipeline } from "stream";
 
@@ -21,14 +21,26 @@ filesRouter.post(
   }
 );
 
-filesRouter.get("/:articleId/downloadPDF", (req, res, next) => {
+filesRouter.get("/:articleId/downloadPDF", async (req, res, next) => {
   try {
+    //1, get data from articles about concrete article using req.params.articleId
+    const articles = await getArticles();
+
+    const foundarticle = articles.find(
+      (article) => article._id === req.params.articleId
+    );
+
+    console.log(foundarticle.title);
+    console.log(foundarticle.content);
+    //2, send that data to getPDFReadableStream(articleData)
+
     res.setHeader("Content-Disposition", "attachment; filename=article.pdf");
 
-    const source = getPDFReadableStream("MY OWL EXAMPLE");
+    console.log("THIS SHOULD BE MY DOWNLOAD articleId: ", req.params.articleId);
+
+    const source = getPDFReadableStream(foundarticle);
 
     const destination = res;
-
     pipeline(source, destination, (err) => {
       console.log(err);
     });
