@@ -1,6 +1,8 @@
 import express from "express";
 import multer from "multer";
 import { saveCoversPictures } from "../../lib/fs-tools.js";
+import { getPDFReadableStream } from "../../lib/pdf-tools.js";
+import { pipeline } from "stream";
 
 const filesRouter = express.Router();
 
@@ -18,5 +20,21 @@ filesRouter.post(
     }
   }
 );
+
+filesRouter.get("/:articleId/downloadPDF", (req, res, next) => {
+  try {
+    res.setHeader("Content-Disposition", "attachment; filename=article.pdf");
+
+    const source = getPDFReadableStream("MY OWL EXAMPLE");
+
+    const destination = res;
+
+    pipeline(source, destination, (err) => {
+      console.log(err);
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default filesRouter;
