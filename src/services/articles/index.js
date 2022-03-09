@@ -42,11 +42,6 @@ articlesRouter.post(
             value: 1,
             unit: "minute",
           },
-          author: {
-            name: "Martin Konečný",
-            avatar:
-              "https://365psd.com/images/previews/880/punk-is-not-dead-vector-graphics-eps-58962.jpg",
-          },
         };
         const articlesArray = await getArticles();
         articlesArray.push(newArticle);
