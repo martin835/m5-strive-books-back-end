@@ -3,8 +3,28 @@ import multer from "multer";
 import { saveCoversPictures, getArticles } from "../../lib/fs-tools.js";
 import { getPDFReadableStream } from "../../lib/pdf-tools.js";
 import { pipeline } from "stream";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const filesRouter = express.Router();
+
+const cloudinaryUploaderAvatars = multer({
+  storage: new CloudinaryStorage({
+    cloudinary, // search automatically for process.env.CLOUDINARY_URL (looking for Cloudinary credentials)
+    params: {
+      folder: "avatars",
+    },
+  }),
+}).single("avatar");
+
+const cloudinaryUploaderCovers = multer({
+  storage: new CloudinaryStorage({
+    cloudinary, // search automatically for process.env.CLOUDINARY_URL (looking for Cloudinary credentials)
+    params: {
+      folder: "article covers",
+    },
+  }),
+}).single("cover");
 
 filesRouter.post(
   "/uploadCover",
@@ -21,6 +41,32 @@ filesRouter.post(
   }
 );
 
+filesRouter.post(
+  "/cloudinaryUploadAvatar",
+  cloudinaryUploaderAvatars,
+  async (req, res, next) => {
+    try {
+      console.log("FILE in the request is: ", req.file);
+      res.send("Uploaded on Cloudinary!");
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+filesRouter.post(
+  "/cloudinaryUploadCover",
+  cloudinaryUploaderCovers,
+  async (req, res, next) => {
+    try {
+      console.log("FILE in the request is: ", req.file);
+      res.send("Uploaded on Cloudinary!");
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 filesRouter.get("/:articleId/downloadPDF", async (req, res, next) => {
   try {
     //1, get data from articles about concrete article using req.params.articleId
@@ -30,8 +76,8 @@ filesRouter.get("/:articleId/downloadPDF", async (req, res, next) => {
       (article) => article._id === req.params.articleId
     );
 
-    console.log(foundarticle.title);
-    console.log(foundarticle.content);
+    /* console.log(foundarticle.title);
+    console.log(foundarticle.content); */
     //2, send that data to getPDFReadableStream(articleData)
 
     res.setHeader("Content-Disposition", "attachment; filename=article.pdf");
