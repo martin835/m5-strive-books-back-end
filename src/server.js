@@ -13,13 +13,11 @@ import {
 import { join } from "path";
 
 const publicFolderPath = join(process.cwd(), "./public");
-/* console.log(publicFolderPath); */
 
 const server = express();
 
 const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL];
 const port = process.env.PORT;
-console.log(process.env.DB_CONNECTION);
 
 // *********************************** MIDDLEWARES ***********************************
 
@@ -30,8 +28,7 @@ server.use(
       //cors is a global middleware - for each request
       console.log("ORIGIN: ", origin);
       // 0 \\ 0
-      if (origin === undefined || whitelist.indexOf(origin) !== -1) {
-        console.log([]);
+      if (origin === undefined || whitelist.indexOf() !== -1) {
         console.log("ORIGIN ALLOWED");
         next(null, true);
       } else {

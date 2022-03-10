@@ -10,16 +10,14 @@ import { getArticles, writeArticles } from "../../lib/fs-tools.js";
 import multer from "multer";
 import { saveCoversPictures } from "../../lib/fs-tools.js";
 import { extname } from "path";
+import { sendRegistrationEmail } from "../../lib/email-tools.js";
+import authorsRouter from "../authors/index.js";
 
-/* console.log(import.meta.url);
-console.log(fileURLToPath(import.meta.url)); */
 const currentFilePath = fileURLToPath(import.meta.url);
 
 const parentFolderPath = dirname(currentFilePath);
-/* console.log(parentFolderPath); */
 
 const articlesJSONPath = join(parentFolderPath, "articles.json");
-/* console.log(articlesJSONPath); */
 
 const articlesRouter = express.Router();
 //1
@@ -131,7 +129,7 @@ articlesRouter.delete("/:articleId", async (request, response) => {
   response.status(204).send();
 });
 
-//6
+//6 - upload cover image for artile
 
 articlesRouter.patch(
   "/:articleId/cover",
@@ -175,5 +173,20 @@ articlesRouter.patch(
     await writeArticles(articlesArray);
   }
 );
+
+//7 - send confirmation email to author when article is created
+
+articlesRouter.post("/confEmail", async (req, res, next) => {
+  try {
+    // 1. Receive email address from req.body
+    console.log(req.body);
+    /* const { email } = req.body; */
+    // 2. Send email to new user
+    await sendRegistrationEmail(req.body);
+    res.send();
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default articlesRouter;

@@ -81,8 +81,6 @@ filesRouter.get("/:articleId/downloadPDF", async (req, res, next) => {
       (article) => article._id === req.params.articleId
     );
 
-    /* console.log(foundarticle.title);
-    console.log(foundarticle.content); */
     //2, send that data to getPDFReadableStream(articleData)
 
     res.setHeader("Content-Disposition", "attachment; filename=article.pdf");
