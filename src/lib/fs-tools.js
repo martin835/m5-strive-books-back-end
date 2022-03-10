@@ -24,5 +24,4 @@ export const saveCoversPictures = (filename, contentAsABuffer) =>
 export const saveAvatarsPictures = (filename, contentAsABuffer) =>
   writeFile(join(avatarsPublicFolderPath, filename), contentAsABuffer);
 
-export const getArticlesReadableStream = () =>
-  createReadStream(articlesJSONPath);
+export const getAuthorsReadableStream = () => createReadStream(authorsJSONPath);

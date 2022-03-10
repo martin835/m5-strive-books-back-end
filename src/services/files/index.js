@@ -1,10 +1,15 @@
 import express from "express";
 import multer from "multer";
-import { saveCoversPictures, getArticles } from "../../lib/fs-tools.js";
+import {
+  saveCoversPictures,
+  getArticles,
+  getAuthorsReadableStream,
+} from "../../lib/fs-tools.js";
 import { getPDFReadableStream } from "../../lib/pdf-tools.js";
 import { pipeline } from "stream";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
+import json2csv from "json2csv";
 
 const filesRouter = express.Router();
 
@@ -88,6 +93,22 @@ filesRouter.get("/:articleId/downloadPDF", async (req, res, next) => {
 
     const destination = res;
     pipeline(source, destination, (err) => {
+      console.log(err);
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+filesRouter.get("/authorsCSV", (req, res, next) => {
+  try {
+    res.setHeader("Content-Disposition", "attachment; filename=authors.csv");
+
+    const source = getAuthorsReadableStream();
+    const transform = new json2csv.Transform();
+    const destination = res;
+
+    pipeline(source, transform, destination, (err) => {
       console.log(err);
     });
   } catch (error) {
