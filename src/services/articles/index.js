@@ -26,10 +26,8 @@ articlesRouter.post(
   newArticleValidation,
   async (request, response, next) => {
     try {
-      console.log(request.body);
       const errorsList = validationResult(request);
       if (errorsList.isEmpty()) {
-        console.log(request.body);
         const newArticle = {
           ...request.body,
           createdAt: new Date(),
