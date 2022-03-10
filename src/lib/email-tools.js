@@ -5,7 +5,9 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 export const sendRegistrationEmail = async (body) => {
   console.log("recieved body:", body);
   const msg = {
-    to: body.email,
+    //normally recipient email will come from request.author.email;
+    // ⬇️ ⬇️ ⬇️ this is just for the testing purposes
+    to: "antonstrohy12531@gmail.com",
     from: process.env.SENDER_EMAIL,
     subject: "Article " + body.title + " created",
     text: body.content,

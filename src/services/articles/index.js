@@ -44,6 +44,8 @@ articlesRouter.post(
         const articlesArray = await getArticles();
         articlesArray.push(newArticle);
         await writeArticles(articlesArray);
+
+        await sendRegistrationEmail(request.body);
         /*       const articlesArray = JSON.parse(fs.readFileSync(articlesJSONPath));
 
       articlesArray.push(newArticle);
@@ -175,18 +177,21 @@ articlesRouter.patch(
 );
 
 //7 - send confirmation email to author when article is created
-
-articlesRouter.post("/confEmail", async (req, res, next) => {
+// This  ⬇️ ⬇️ ⬇️  is an example how to send an email with dedicated endpoint.
+//If we want to send confirmation email after an article is created,
+//it should be part of articlesRouter.post (....post new article router -- #1 ⬆️⬆️⬆️ )
+/* articlesRouter.post("/sendEmail", async (req, res, next) => {
   try {
     // 1. Receive email address from req.body
     console.log(req.body);
-    /* const { email } = req.body; */
+    console.log("ArticleId from params: ", req.params.articleId);
+    
     // 2. Send email to new user
     await sendRegistrationEmail(req.body);
     res.send();
   } catch (error) {
     next(error);
   }
-});
+}); */
 
 export default articlesRouter;
